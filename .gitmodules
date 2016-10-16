@@ -1,0 +1,3 @@
+[submodule "Browser"]
+	path = Browser
+	url = https://github.com/venam/Browser.git
