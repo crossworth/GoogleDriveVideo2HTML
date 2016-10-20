@@ -27,7 +27,7 @@ Please check the License on the Browser.hpp file.
 #include <vector>
 #include <sstream>
 
-#include "Browser\Browser.hpp"
+#include "Browser/Browser.hpp"
 
 
 const std::regex TEST_GOOGLE_LINK("https:\\/\\/(drive|docs)\\.google\\.com\\/(file\\/d\\/|uc\?id=)([a-zA-Z0-9-]+)");
@@ -36,7 +36,7 @@ const std::string GOOGLE_REDIRECTOR("/redirector.googlevideo.com");
 
 
 void print_usage() {
-	std::cout << "GoogleDrive2HTML5" << std::endl;
+	std::cout << "GoogleDrive2HTML5 - PedroHenrique.ninja" << std::endl;
 	std::cout << "Usage: drive2html LINK [JSON]" << std::endl;
 	std::cout << "\tLINK - Google Drive link" << std::endl;
 	std::cout << "\tJSON - Output to json format" << std::endl << std::endl;
@@ -110,6 +110,7 @@ void process_google_drive_id(const std::string& id, bool print_to_json = false) 
 			std::cout << "[";
 		}
 
+		int size = results.size();
 		for (auto& r : results) {
 			std::vector<std::string> prefix = explode(r, '|');
 			int type = std::stoi(prefix[0]);
@@ -144,9 +145,13 @@ void process_google_drive_id(const std::string& id, bool print_to_json = false) 
 			}
 
 			std::string real_video_link = get_real_link(link);
-
+			--size;
 			if (print_to_json) {
 				std::cout << "{";
+				std::cout << "\"type\":";
+				std::cout << "\"";
+				std::cout << type;
+				std::cout << "\", ";
 				std::cout << "\"quality\":";
 				std::cout << "\"";
 				std::cout << quality;
@@ -155,9 +160,13 @@ void process_google_drive_id(const std::string& id, bool print_to_json = false) 
 				std::cout << "\"";
 				std::cout << real_video_link;
 				std::cout << "\"";
-				std::cout << "}, ";
+				if (size > 0) {
+					std::cout << "}, ";
+				} else {
+					std::cout << "}";
+				}
 			} else {
-				std::cout << quality << " " << real_video_link << std::endl;
+				std::cout << type << " " << quality << " " << real_video_link << std::endl;
 			}
 		}
 
@@ -181,6 +190,7 @@ int main(int argc, char** argv) {
 
 	std::string google_drive_link = std::string(argv[1]);
 	std::string google_drive_video_id = get_google_drive_id(google_drive_link);
+
 
 	bool output_json = false;
 
